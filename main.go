@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/go-martini/martini"
 )
 
 var posts map[string]*models.Post
@@ -79,6 +81,9 @@ func deleteHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fmt.Println("Listening on port :8080")
 	posts = make(map[string]*models.Post, 0)
+
+	m := martini.Classic()
+
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/"))))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/write", writeHandler)
