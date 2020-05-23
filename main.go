@@ -16,11 +16,13 @@ var counter int
 
 func indexHandler(rnd render.Render) {
 	fmt.Println(counter)
+
 	rnd.HTML(200, "index", posts)
 }
 
 func writeHandler(rnd render.Render) {
-	rnd.HTML(200, "write", nil)
+	post := models.Post{}
+	rnd.HTML(200, "write", post)
 }
 
 func editHandler(rnd render.Render, r *http.Request, params martini.Params) {
@@ -28,7 +30,9 @@ func editHandler(rnd render.Render, r *http.Request, params martini.Params) {
 	post, found := posts[id]
 	if !found {
 		rnd.Redirect("/")
+		return
 	}
+
 	rnd.HTML(200, "write", post)
 }
 
@@ -58,6 +62,7 @@ func deleteHandler(rnd render.Render, r *http.Request, params martini.Params) {
 
 	if id == "" {
 		rnd.Redirect("/")
+		return
 	}
 
 	delete(posts, id)
@@ -68,6 +73,7 @@ func deleteHandler(rnd render.Render, r *http.Request, params martini.Params) {
 func getHtmlHandler(rnd render.Render, r *http.Request) {
 	md := r.FormValue("md")
 	htmlBytes := blackfriday.MarkdownBasic([]byte(md))
+
 	rnd.JSON(200, map[string]interface{}{"html": string(htmlBytes)})
 }
 
@@ -99,6 +105,7 @@ func main() {
 
 	staticOptions := martini.StaticOptions{Prefix: "assets"}
 	m.Use(martini.Static("assets", staticOptions))
+
 	m.Get("/", indexHandler)
 	m.Get("/write", writeHandler)
 	m.Get("/edit/:id", editHandler)
