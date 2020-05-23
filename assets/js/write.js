@@ -1,6 +1,8 @@
 $(function() {
-    $.post("/gethtml", {md: $("#content").va()}), function (response) {
-
-    }
+    $("#content").bind("input change", function() {
+        $.post("/gethtml", {md: $("#content").val()}, function (response) {
+            $("#md_html").html(response.html)
+        })
+    })
 })
 
