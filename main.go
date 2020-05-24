@@ -14,6 +14,10 @@ import (
 //var posts map[string]*models.Post
 var postsCollection *mgo.Collection
 
+func getLoginHandler(rnd render.Render) {
+	rnd.HTML(200, "login", nil)
+}
+
 func indexHandler(rnd render.Render) {
 	postDocuments := []documents.PostDocument{}
 	postsCollection.Find(nil).All(&postDocuments)
@@ -114,6 +118,7 @@ func main() {
 	m.Use(martini.Static("assets", staticOptions))
 
 	m.Get("/", indexHandler)
+	m.Get("/login", getLoginHandler)
 	m.Get("/write", writeHandler)
 	m.Get("/edit/:id", editHandler)
 	m.Post("/SavePost", savePostHandler)
